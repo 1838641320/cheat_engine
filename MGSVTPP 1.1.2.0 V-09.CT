@@ -324,6 +324,7 @@ INJECTION POINT/}
             <CheatEntry>
               <ID>884</ID>
               <Description>"修改静静坐标位置"</Description>
+              <Options moHideChildren="1"/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 //code from here to '[DISABLE]' will be used to enable the cheat
@@ -348,11 +349,11 @@ test ebx,ebx
 jz @f
 mov [rax+20],ebx
 
-movss [save_mem],xmm0
+movups [save_mem],xmm0
 movss xmm0,[rcx+14]
 addss xmm0,[constant_1]
 movss [rax+24],xmm0
-movss xmm0,[save_mem]
+movups xmm0,[save_mem]
 
 mov ebx,[rcx+18]
 mov [rax+28],ebx
@@ -379,7 +380,7 @@ dd (float)1
 dq 0
 
 save_mem:
-dq 0 0 0
+dq 0 0 0 0
 
 quiet_pos:
 dq 0 0 0
@@ -423,6 +424,16 @@ mgsvtpp.exe+CE8AF7 - E8 A41C0000           - call mgsvtpp.exe+CEA7A0
 mgsvtpp.exe+CE8AFC - 48 8D 4E E0           - lea rcx,[rsi-20]
 */
 </AssemblerScript>
+              <Hotkeys>
+                <Hotkey>
+                  <Action>Activate</Action>
+                  <Keys>
+                    <Key>18</Key>
+                    <Key>97</Key>
+                  </Keys>
+                  <ID>0</ID>
+                </Hotkey>
+              </Hotkeys>
               <CheatEntries>
                 <CheatEntry>
                   <ID>885</ID>
@@ -16359,6 +16370,61 @@ mgsvtpp.exe+B9D74E - 48 8B CE              - mov rcx,rsi
 */
 </AssemblerScript>
     </CheatEntry>
+    <CheatEntry>
+      <ID>888</ID>
+      <Description>"直升机一击必杀"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+DEF9DA) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov rax,[rsp+58]
+mov dword ptr[rsp+34],7000
+
+exit:
+jmp returnhere
+
+"mgsvtpp.exe"+DEF9DA:
+jmp newmem
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"mgsvtpp.exe"+DEF9DA:
+db 48 8B 44 24 58
+//mov rax,[rsp+58]
+
+
+/*
+mgsvtpp.exe+DEF9B3 - E8 38FAE0FF           - call mgsvtpp.exe+BFF3F0
+mgsvtpp.exe+DEF9B8 - 4C 8D 4C 24 3C        - lea r9,[rsp+3C]
+mgsvtpp.exe+DEF9BD - 48 8B 88 98000000     - mov rcx,[rax+00000098]
+mgsvtpp.exe+DEF9C4 - 4C 8D 44 24 34        - lea r8,[rsp+34]
+mgsvtpp.exe+DEF9C9 - 48 8D 55 A0           - lea rdx,[rbp-60]
+mgsvtpp.exe+DEF9CD - 48 8B 49 20           - mov rcx,[rcx+20]
+mgsvtpp.exe+DEF9D1 - 48 8B 01              - mov rax,[rcx]
+mgsvtpp.exe+DEF9D4 - FF 90 28020000        - call qword ptr [rax+00000228]
+mgsvtpp.exe+DEF9DA - 48 8B 44 24 58        - mov rax,[rsp+58]
+mgsvtpp.exe+DEF9DF - 66 83 B8 30010000 0E  - cmp word ptr [rax+00000130],0E { 14 }
+mgsvtpp.exe+DEF9E7 - 75 2A                 - jne mgsvtpp.exe+DEFA13
+mgsvtpp.exe+DEF9E9 - 48 8B 44 24 40        - mov rax,[rsp+40]
+mgsvtpp.exe+DEF9EE - 44 84 68 14           - test [rax+14],r13b
+mgsvtpp.exe+DEF9F2 - 74 1F                 - je mgsvtpp.exe+DEFA13
+mgsvtpp.exe+DEF9F4 - 8B 44 24 34           - mov eax,[rsp+34]
+*/
+</AssemblerScript>
+    </CheatEntry>
   </CheatEntries>
   <CheatCodes>
     <CodeEntry>
@@ -16875,6 +16941,31 @@ mgsvtpp.exe+B9D74E - 48 8B CE              - mov rcx,rsi
         <Byte>7F</Byte>
         <Byte>44</Byte>
         <Byte>24</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>直升机伤害回调 :mov rax,[rsp+58]</Description>
+      <AddressString>mgsvtpp.exe+DEF9DA</AddressString>
+      <Before>
+        <Byte>90</Byte>
+        <Byte>28</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>58</Byte>
+      </Actual>
+      <After>
+        <Byte>66</Byte>
+        <Byte>83</Byte>
+        <Byte>B8</Byte>
+        <Byte>30</Byte>
+        <Byte>01</Byte>
       </After>
     </CodeEntry>
   </CheatCodes>
