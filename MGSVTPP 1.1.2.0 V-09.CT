@@ -322,6 +322,55 @@ INJECTION POINT/}
           </Hotkeys>
           <CheatEntries>
             <CheatEntry>
+              <ID>891</ID>
+              <Description>"取消静静自动复位"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+assert(mgsvtpp.exe+717B193,74 DE)
+
+mgsvtpp.exe+717B193:
+nop 2
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+mgsvtpp.exe+717B193:
+db 74 DE
+
+
+
+/*
+
+mgsvtpp.exe+717B168 - 0FBA F1 0E            - btr ecx,0E { 14 }
+mgsvtpp.exe+717B16C - 41 89 88 9C010000     - mov [r8+0000019C],ecx
+mgsvtpp.exe+717B173 - 41 C6 41 05 0F        - mov byte ptr [r9+05],0F { 15 }
+mgsvtpp.exe+717B178 - B0 01                 - mov al,01 { 1 }
+mgsvtpp.exe+717B17A - C3                    - ret
+mgsvtpp.exe+717B17B - 49 8B 42 20           - mov rax,[r10+20]
+mgsvtpp.exe+717B17F - 89 D1                 - mov ecx,edx
+mgsvtpp.exe+717B181 - 83 3C 88  00          - cmp dword ptr [rax+rcx*4],00 { 0 }
+mgsvtpp.exe+717B185 - 74 0E                 - je mgsvtpp.exe+717B195
+mgsvtpp.exe+717B187 - 41 8B 80 98010000     - mov eax,[r8+00000198]
+mgsvtpp.exe+717B18E - C1 E8 03              - shr eax,03 { 3 }
+mgsvtpp.exe+717B191 - A8 01                 - test al,01 { 1 }
+mgsvtpp.exe+717B193 - 74 DE                 - je mgsvtpp.exe+717B173  &lt;----------injecting here
+mgsvtpp.exe+717B195 - 30 C0                 - xor al,al
+mgsvtpp.exe+717B197 - C3                    - ret
+*/
+</AssemblerScript>
+              <Hotkeys>
+                <Hotkey>
+                  <Action>Activate</Action>
+                  <Keys>
+                    <Key>18</Key>
+                    <Key>97</Key>
+                  </Keys>
+                  <ID>0</ID>
+                </Hotkey>
+              </Hotkeys>
+            </CheatEntry>
+            <CheatEntry>
               <ID>884</ID>
               <Description>"修改静静坐标位置"</Description>
               <Options moHideChildren="1"/>
@@ -334,6 +383,8 @@ registersymbol(quiet_pos)
 label(returnhere)
 label(originalcode)
 label(exit)
+label(tp_quiet)
+label(quiet_pos)
 
 newmem: //this is allocated memory, you have read,write,execute access
 mov [quiet_pos],rax
@@ -1163,6 +1214,16 @@ mgsvtpp.exe+9A74463 - 4C 8B 24 24           - mov r12,[rsp]
 
 */
 </AssemblerScript>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Activate</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>97</Key>
+              </Keys>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
         </CheatEntry>
         <CheatEntry>
           <ID>371</ID>
@@ -1389,7 +1450,7 @@ mgsvtpp.exe+41FC339:  F3 44 0F10 25 865EF1FD      -  movss xmm12,[1421121C8]    
         </CheatEntry>
         <CheatEntry>
           <ID>851</ID>
-          <Description>"modify damage"</Description>
+          <Description>"modify damage to normal enemy"</Description>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 //code from here to '[DISABLE]' will be used to enable the cheat
@@ -3459,6 +3520,46 @@ mgsvtpp.exe+1041E44 - 44 0F29 BC 24 70010000  - movaps [rsp+00000170],xmm15
           </Hotkeys>
         </CheatEntry>
         <CheatEntry>
+          <ID>901</ID>
+          <Description>"fast shoot"</Description>
+          <Color>008000</Color>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+106FFB2)
+assert("mgsvtpp.exe"+106FFB2,F3 0F 11 B6 24 03 00 00)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+//movss [rsi+00000324],xmm6
+mov [rsi+00000324],(float)-1
+movss xmm6,[rsi+00000324]
+
+exit:
+jmp returnhere
+
+"mgsvtpp.exe"+106FFB2:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"mgsvtpp.exe"+106FFB2:
+db F3 0F 11 B6 24 03 00 00
+//movss [rsi+00000324],xmm6
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
           <ID>766</ID>
           <Description>"fire_rate 默认(1/60) 越大越快"</Description>
           <ShowAsSigned>0</ShowAsSigned>
@@ -5035,7 +5136,7 @@ mgsvtpp.exe+D11035 - 88 44 24 34           - mov [rsp+34],al
         </CheatEntry>
         <CheatEntry>
           <ID>867</ID>
-          <Description>"获取静静枪械信息"</Description>
+          <Description>"获取静静枪械信息：总是有消音器，子弹飞行速度特别快"</Description>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 //code from here to '[DISABLE]' will be used to enable the cheat
@@ -5045,16 +5146,20 @@ assert("mgsvtpp.exe"+D1905B,F6 44 88 09 01)
 label(returnhere)
 label(originalcode)
 label(exit)
+label(quiet_gun_info)
 
 newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
 
 originalcode:
-test byte ptr [rax+rcx*4+09],01
 push rax
+or byte ptr [rax+rcx*4+09],01
+mov dword ptr [rax+rcx*4],(float)8192
 lea rax,[rax+rcx*4]
 mov [quiet_gun_info],rax
 pop rax
+
+test byte ptr [rax+rcx*4+09],01
 exit:
 jmp returnhere
 nop 4
@@ -5120,7 +5225,7 @@ mgsvtpp.exe+D1908C - 4C 8B 09              - mov r9,[rcx]
           <CheatEntries>
             <CheatEntry>
               <ID>874</ID>
-              <Description>"总是有消音器"</Description>
+              <Description>"总是有消音器 读取时生效"</Description>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 //code from here to '[DISABLE]' will be used to enable the cheat
@@ -5274,6 +5379,16 @@ mgsvtpp.exe+D06519 - 81 8F 98010000 00200000 - or [rdi+00000198],00002000 { 8192
 mgsvtpp.exe+D06523 - EB 0A                 - jmp mgsvtpp.exe+D0652F
 */
 </AssemblerScript>
+              <Hotkeys>
+                <Hotkey>
+                  <Action>Activate</Action>
+                  <Keys>
+                    <Key>18</Key>
+                    <Key>97</Key>
+                  </Keys>
+                  <ID>0</ID>
+                </Hotkey>
+              </Hotkeys>
             </CheatEntry>
             <CheatEntry>
               <ID>868</ID>
@@ -7308,6 +7423,154 @@ INJECTION POINT/}
               <Address>wat_WeatherData</Address>
               <Offsets>
                 <Offset>24</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>906</ID>
+          <Description>"TimeHook"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, mgsvtpp.exe+622092D)
+define(bytes, 8B 4C 24 38 89 48 5C)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+aobScanModule(aobTimeHook, mgsvtpp.exe, E8xxxxxxxx8Bxxxxxx89xxxx48xxxxxxC3)
+// i2aobScanModule(aobTimeHook, $MODULE_NAME, E8xxxxxxxx8Bxxxxxx89xxxx48xxxxxxC3)
+define(injTimeHook, aobTimeHook+5)
+assert(injTimeHook, bytes)
+// i2assert(injTimeHook, bytes)
+registerSymbol(injTimeHook)
+
+alloc(memTimeHook, 0x400, injTimeHook)
+
+label(ptrTimeHook)
+registerSymbol(ptrTimeHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memTimeHook:
+	ptrTimeHook:
+		dq 0
+	align 10 CC
+	n_code:
+		mov [ptrTimeHook],rax
+	o_code:
+		mov ecx,[rsp+38]
+		mov [rax+5C],ecx
+	exit:
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injTimeHook:
+	jmp n_code
+	nop
+	nop
+	return:
+
+
+{$lua}
+TIME_OF_DAY_ADDR = '[ptrTimeHook]+5C'
+{$asm}
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injTimeHook:
+	db bytes
+
+unregisterSymbol(injTimeHook)
+
+unregisterSymbol(ptrTimeHook)
+
+dealloc(memTimeHook)
+
+{
+//// Injection Point: mgsvtpp.exe+622092D  -  000000014622092D
+//// AOB address: 0000000146220928  -  mgsvtpp.exe+6220928
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+62208D1:  4D 89 C2                    -  mov r10,r8
+mgsvtpp.exe+62208D4:  49 C7 C6 B14A4C0B           -  mov r14,0B4C4AB1
+mgsvtpp.exe+62208DB:  41 81 F7 FFBB2200           -  xor r15d,0022BBFF
+mgsvtpp.exe+62208E2:  9C                          -  pushfq
+mgsvtpp.exe+62208E3:  BD 800128DD                 -  mov ebp,DD280180                   ["SubMicrosoft (R) HLSL Shader Compiler 9.29.952.3111"]
+mgsvtpp.exe+62208E8:  45 29 D2                    -  sub r10d,r10d
+mgsvtpp.exe+62208EB:  E9 FE76E603                 -  jmp mgsvtpp.exe+A087FEE
+mgsvtpp.exe+62208F0:  31 48 83                    -  xor [rax-7D],ecx
+mgsvtpp.exe+62208F3:  E3 5B                       -  jecxz mgsvtpp.exe+6220950
+mgsvtpp.exe+62208F5:  48 D1 E1                    -  shl rcx,1
+mgsvtpp.exe+62208F8:  48 03 0C 24                 -  add rcx,[rsp]
+mgsvtpp.exe+62208FC:  48 8D 64 24 08              -  lea rsp,[rsp+08]
+mgsvtpp.exe+6220901:  83 E2 46                    -  and edx,46
+mgsvtpp.exe+6220904:  4C 8D A9 96E1C958           -  lea r13,[rcx+58C9E196]
+mgsvtpp.exe+622090B:  E9 60FE6C04                 -  jmp mgsvtpp.exe+A8F0770
+mgsvtpp.exe+6220910:  0F66 66 66                  -  pcmpgtd mm4,[rsi+66]
+mgsvtpp.exe+6220914:  66 66 66 2E 0F1F 84 00 00000000   -  nop word ptr cs:[rax+rax+00000000]
+mgsvtpp.exe+6220920:  89 54 24 10                 -  mov [rsp+10],edx
+mgsvtpp.exe+6220924:  48 83 EC 28                 -  sub rsp,28
+mgsvtpp.exe+6220928:  E8 939378FA                 -  call mgsvtpp.exe+9A9CC0            &lt;&lt;&lt;--- AOB Starts Here
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+622092D:  8B 4C 24 38                 -  mov ecx,[rsp+38]
+mgsvtpp.exe+6220931:  89 48 5C                    -  mov [rax+5C],ecx
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+6220934:  48 83 C4 28                 -  add rsp,28
+mgsvtpp.exe+6220938:  C3                          -  ret
+mgsvtpp.exe+6220939:  CC                          -  int 3
+mgsvtpp.exe+622093A:  48 8B 3C 24                 -  mov rdi,[rsp]
+mgsvtpp.exe+622093E:  4C 89 34 24                 -  mov [rsp],r14
+mgsvtpp.exe+6220942:  4C 8D 35 2AE77505           -  lea r14,[mgsvtpp.exe+B97F073]
+mgsvtpp.exe+6220949:  4C 87 34 24                 -  xchg [rsp],r14
+mgsvtpp.exe+622094D:  C3                          -  ret
+mgsvtpp.exe+622094E:  4C 8B 2C 24                 -  mov r13,[rsp]
+mgsvtpp.exe+6220952:  4C 89 0C 24                 -  mov [rsp],r9
+mgsvtpp.exe+6220956:  49 F7 D1                    -  not r9
+mgsvtpp.exe+6220959:  4C 21 0C 24                 -  and [rsp],r9
+mgsvtpp.exe+622095D:  41 59                       -  pop r9
+mgsvtpp.exe+622095F:  4C 0B 0C 24                 -  or r9,[rsp]
+mgsvtpp.exe+6220963:  48 89 34 24                 -  mov [rsp],rsi
+mgsvtpp.exe+6220967:  48 8D 35 1327ED00           -  lea rsi,[mgsvtpp.exe+70F3081]
+mgsvtpp.exe+622096E:  48 87 34 24                 -  xchg [rsp],rsi
+mgsvtpp.exe+6220972:  C3                          -  ret
+mgsvtpp.exe+6220973:  4D 31 DB                    -  xor r11,r11
+//// Template: I2CEA_AOBFullInjection
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>907</ID>
+              <Description>"时间流逝倍速"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>ptrTimeHook</Address>
+              <Offsets>
+                <Offset>60</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>908</ID>
+              <Description>"时间"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>ptrTimeHook</Address>
+              <Offsets>
+                <Offset>5c</Offset>
               </Offsets>
             </CheatEntry>
           </CheatEntries>
@@ -16191,7 +16454,7 @@ newmem: //this is allocated memory, you have read,write,execute access
 
 originalcode:
 //mov [rcx],eax
-mov [rcx],7000
+mov [rcx],70000
 test byte ptr [rdi+14],01
 
 exit:
@@ -16262,13 +16525,22 @@ db 41 89 07 B0 01
 alloc(newmem,2048,"mgsvtpp.exe"+17D5751)
 assert("mgsvtpp.exe"+17D569f,41 0F B7 47 FA)
 assert("mgsvtpp.exe"+17D5751,41 B8 D0 07 00 00)
+assert("mgsvtpp.exe"+187e4a5,8b 44 24 34 b9 00 04 00 00)
+assert("mgsvtpp.exe"+187e5ba,f3 0f 10 04 08)
 
 label(returnhere)
 label(originalcode)
 label(exit)
 label(block2)
 label(returnhere2)
-label(block2)
+label(block3)
+label(returnhere3)
+label(block4)
+label(returnhere4)
+
+
+
+
 
 newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
@@ -16279,14 +16551,29 @@ mov r8d,000077D0
 
 exit:
 jmp returnhere
-nop 4
+align 10 cc
 
 block2:
 movzx eax,word ptr [r15-06]
 mov [rsp+34],7000
 mov [rsp+3c],7000
 jmp returnhere2
-nop 4
+align 10 cc
+
+block3:
+mov eax,7000
+mov [rsp+34],7000 // non lethal
+mov [rsp+38],7000 // lethal
+mov ecx,00000400
+jmp returnhere3
+align 10 cc
+
+block4:
+mov [rax+rcx],0
+mov [rax+rcx+14],0
+jmp returnhere4
+
+
 
 "mgsvtpp.exe"+17D5751:
 jmp newmem
@@ -16294,9 +16581,19 @@ nop
 returnhere:
 
 
-"mgsvtpp.exe"+17D569f:
+"mgsvtpp.exe"+17D569f://狙击骷髅的
 jmp block2
 returnhere2:
+
+
+"mgsvtpp.exe"+187e4a5://装甲骷髅的
+jmp block3
+nop 4
+returnhere3:
+
+"mgsvtpp.exe"+187e5ba:
+jmp block4
+returnhere4:
 
  
  
@@ -16309,6 +16606,16 @@ db 41 B8 D0 07 00 00
 
 "mgsvtpp.exe"+17D569f:
 movzx eax,word ptr [r15-06]
+
+
+"mgsvtpp.exe"+187e4a5:
+mov eax,[rsp+34]
+mov ecx,00000400
+
+"mgsvtpp.exe"+187e5ba:
+db f3 0f 10 04 08
+
+
 </AssemblerScript>
     </CheatEntry>
     <CheatEntry>
@@ -16424,6 +16731,1207 @@ mgsvtpp.exe+DEF9F2 - 74 1F                 - je mgsvtpp.exe+DEFA13
 mgsvtpp.exe+DEF9F4 - 8B 44 24 34           - mov eax,[rsp+34]
 */
 </AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>890</ID>
+      <Description>"静静状态时间999秒"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+717EB22)
+assert("mgsvtpp.exe"+717EB22,f3 0f 11 03 41 8b 43 48)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+//movss [rbx],xmm0
+mov dword ptr [rbx],(float)999
+
+mov eax,[r11+48]
+
+exit:
+jmp returnhere
+
+
+
+
+"mgsvtpp.exe"+717EB22:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"mgsvtpp.exe"+717EB22:
+db F3 0F 11 03 41 8B 43 48
+//movss [rbx],xmm0
+//mov eax,[r11+48]
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Activate</Action>
+          <Keys>
+            <Key>18</Key>
+            <Key>97</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>893</ID>
+      <Description>"No description"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>A736124C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>894</ID>
+      <Description>"获取当前枪械信息"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+8EF63A)
+assert("mgsvtpp.exe"+8EF63A,48 8B 01 48 BA FC 4F B2 2D 27 3C 00 00)
+label(returnhere)
+label(originalcode)
+label(exit)
+registersymbol(my_gun_info)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov rax,[rcx]
+mov [my_gun_info],rcx
+mov rdx,00003C272DB24FFC
+
+exit:
+jmp returnhere
+align 10 cc
+
+my_gun_info:
+dq 0 0 0 0
+
+
+
+"mgsvtpp.exe"+8EF63A:
+jmp newmem
+nop 8
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+unregistersymbol(my_gun_info)
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"mgsvtpp.exe"+8EF63A:
+db 48 8B 01 48 BA FC 4F B2 2D 27 3C 00 00
+//mov rax,[rcx]
+//mov rdx,00003C272DB24FFC
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>895</ID>
+          <Description>"No description"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Binary</VariableType>
+          <BitStart>0</BitStart>
+          <BitLength>0</BitLength>
+          <ShowAsBinary>0</ShowAsBinary>
+          <Address>my_gun_info</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>896</ID>
+              <Description>"后备弹药数"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>+1c0</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>899</ID>
+      <Description>"获取当前枪械信息2"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+1060A31)
+assert("mgsvtpp.exe"+1060A31,0F 29 41 80 0F 28 4A 90)
+label(returnhere)
+label(originalcode)
+label(exit)
+registersymbol(my_gun_info2)
+label(my_gun_info2)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+movaps [rcx-80],xmm0
+mov [my_gun_info2],rcx
+sub [my_gun_info2],#80
+movaps xmm1,[rdx-70]
+
+exit:
+jmp returnhere
+align 10 cc
+
+my_gun_info2:
+dq 0 0 0 0 0
+
+
+"mgsvtpp.exe"+1060A31:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+unregistersymbol(my_gun_info2)
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"mgsvtpp.exe"+1060A31:
+db 0F 29 41 80 0F 28 4A 90
+//movaps [rcx-80],xmm0
+//movaps xmm1,[rdx-70]
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>900</ID>
+          <Description>"No description"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>my_gun_info2</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>909</ID>
+      <Description>"playerHook （移动速度倍率）"</Description>
+      <Options moHideChildren="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address, mgsvtpp.exe+69006B9)
+define(bytes, 48 8B 41 38 48 8B 79 30)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+aobScanModule(aobPlayerHook, mgsvtpp.exe, 48xxxxxx48xxxxxx41xxxx4Cxxxxxx4B)
+// i2aobScanModule(aobPlayerHook, $MODULE_NAME, 48xxxxxx48xxxxxx41xxxx4Cxxxxxx4B)
+define(injPlayerHook, aobPlayerHook)
+assert(injPlayerHook, bytes)
+// i2assert(injPlayerHook, bytes)
+registerSymbol(injPlayerHook)
+
+alloc(memPlayerHook, 0x400, injPlayerHook)
+
+label(ptrPlayerHook)
+registerSymbol(ptrPlayerHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memPlayerHook:
+	ptrPlayerHook:
+		dq 0
+	align 10 CC
+	n_code:
+		mov [ptrPlayerHook],rcx
+	o_code:
+		mov rax,[rcx+38]
+		mov rdi,[rcx+30]
+	exit:
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injPlayerHook:
+	jmp n_code
+	nop
+	nop
+	nop
+	return:
+
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injPlayerHook:
+	db bytes
+
+unregisterSymbol(injPlayerHook)
+
+unregisterSymbol(ptrPlayerHook)
+
+dealloc(memPlayerHook)
+
+{
+//// Injection Point: mgsvtpp.exe+69006B9  -  00000001469006B9
+//// AOB address: 00000001469006B9  -  mgsvtpp.exe+69006B9
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+6900668:  41 89 C7                    -  mov r15d,eax
+mgsvtpp.exe+690066B:  44 0B 3C 24                 -  or r15d,[rsp]
+mgsvtpp.exe+690066F:  41 F7 D7                    -  not r15d
+mgsvtpp.exe+6900672:  41 83 E7 E0                 -  and r15d,-20
+mgsvtpp.exe+6900676:  48 8D 64 24 08              -  lea rsp,[rsp+08]
+mgsvtpp.exe+690067B:  41 C1 CF 05                 -  ror r15d,05
+mgsvtpp.exe+690067F:  44 0FA4 FD 05               -  shld ebp,r15d,05
+mgsvtpp.exe+6900684:  0F83 8084C906               -  jae mgsvtpp.exe+D598B0A
+mgsvtpp.exe+690068A:  66 0F1F 44 00 00            -  nop word ptr [rax+rax+00]
+mgsvtpp.exe+6900690:  55                          -  push rbp
+mgsvtpp.exe+6900691:  53                          -  push rbx
+mgsvtpp.exe+6900692:  57                          -  push rdi
+mgsvtpp.exe+6900693:  41 55                       -  push r13
+mgsvtpp.exe+6900695:  41 56                       -  push r14
+mgsvtpp.exe+6900697:  41 57                       -  push r15
+mgsvtpp.exe+6900699:  48 8D AC 24 D1FFFFFF        -  lea rbp,[rsp-0000002F]
+mgsvtpp.exe+69006A1:  48 81 EC B8000000           -  sub rsp,000000B8
+mgsvtpp.exe+69006A8:  48 8B 05 818C24FC           -  mov rax,[mgsvtpp.exe+2B49330]
+mgsvtpp.exe+69006AF:  48 31 E0                    -  xor rax,rsp
+mgsvtpp.exe+69006B2:  48 89 85 D7FFFFFF           -  mov [rbp-00000029],rax
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+69006B9:  48 8B 41 38                 -  mov rax,[rcx+38]                   &lt;&lt;&lt;--- AOB Starts Here
+mgsvtpp.exe+69006BD:  48 8B 79 30                 -  mov rdi,[rcx+30]
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+69006C1:  41 89 D7                    -  mov r15d,edx
+mgsvtpp.exe+69006C4:  4C 8B 68 60                 -  mov r13,[rax+60]
+mgsvtpp.exe+69006C8:  4B 8D 1C 7F                 -  lea rbx,[r15+r15*2]
+mgsvtpp.exe+69006CC:  49 89 CE                    -  mov r14,rcx
+mgsvtpp.exe+69006CF:  49 8B 85 E0000000           -  mov rax,[r13+000000E0]
+mgsvtpp.exe+69006D6:  B9 FFFF0000                 -  mov ecx,0000FFFF
+mgsvtpp.exe+69006DB:  48 C1 E3 05                 -  shl rbx,05
+mgsvtpp.exe+69006DF:  66 42 39 0C 78              -  cmp [rax+r15*2],cx
+mgsvtpp.exe+69006E4:  74 07                       -  je mgsvtpp.exe+69006ED
+mgsvtpp.exe+69006E6:  83 4C 3B 50 02              -  or dword ptr [rbx+rdi+50],02
+mgsvtpp.exe+69006EB:  EB 05                       -  jmp mgsvtpp.exe+69006F2
+mgsvtpp.exe+69006ED:  83 64 3B 50 FD              -  and dword ptr [rbx+rdi+50],-03
+mgsvtpp.exe+69006F2:  8B 44 3B 50                 -  mov eax,[rbx+rdi+50]
+mgsvtpp.exe+69006F6:  48 89 B4 24 00010000        -  mov [rsp+00000100],rsi
+mgsvtpp.exe+69006FE:  4C 89 A4 24 B0000000        -  mov [rsp+000000B0],r12
+mgsvtpp.exe+6900706:  A8 01                       -  test al,01
+mgsvtpp.exe+6900708:  75 57                       -  jne mgsvtpp.exe+6900761
+mgsvtpp.exe+690070A:  A8 02                       -  test al,02
+mgsvtpp.exe+690070C:  75 53                       -  jne mgsvtpp.exe+6900761
+//// Template: I2CEA_AOBFullInjection
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>910</ID>
+          <Description>"player speed"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, mgsvtpp.exe+C83C161)
+define(bytes, 0F 5C 41 20 0F 29 41 40)
+
+define(default_mul,2)
+define(default_mulDH,1.75)
+define(default_mulDW,2.5)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+aobScanModule(aobDeltaWrtHook, mgsvtpp.exe, 0F58xx0F5Cxxxx0F29xxxx0F29)
+// i2aobScanModule(aobDeltaWrtHook, mgsvtpp.exe, 0F58xx0F5Cxxxx0F29xxxx0F29)
+define(injDeltaWrtHook, aobDeltaWrtHook+3)
+assert(injDeltaWrtHook, bytes)
+// i2assert(injDeltaWrtHook, bytes)
+registerSymbol(injDeltaWrtHook)
+
+alloc(memDeltaWrtHook, 0x400, injDeltaWrtHook)
+
+label(fltDeltaWrtHook)
+registerSymbol(fltDeltaWrtHook)
+label(fltDeltaWrtDHHook)
+registerSymbol(fltDeltaWrtDHHook)
+label(fltDeltaWrtDWHook)
+registerSymbol(fltDeltaWrtDWHook)
+
+label(ptrDeltaWrtHook)
+registerSymbol(ptrDeltaWrtHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memDeltaWrtHook:
+	fltDeltaWrtHook:
+		dd (float)default_mul
+		dd (float)1
+		dd (float)default_mul
+		dd (float)1
+		//
+		dd (float)default_mul // Player Multiplier
+		dd (float)default_mul // Saved reset value
+	align 10
+	fltDeltaWrtDHHook:
+		dd (float)default_mulDH
+		dd (float)1
+		dd (float)default_mulDH
+		dd (float)1
+		//
+		dd (float)default_mulDH // D-Horse Multiplier
+	align 10
+	fltDeltaWrtDWHook:
+		dd (float)default_mulDW
+		dd (float)1
+		dd (float)default_mulDW
+		dd (float)1
+		//
+		dd (float)default_mulDW // D-Walker Multiplier
+	align 10
+	ptrDeltaWrtHook:
+		dq 0
+		dq 0
+		dq 0
+	align 10 CC
+	n_code:
+		subps xmm0,[rcx+20]
+		pushfq
+		push rax
+
+		mov rax,[ptrPlayerHook]
+		test rax,rax
+		jz @f
+			mov rax,[rax+30]
+			test rax,rax
+			jz @f
+				mov rax,[rax+48]
+				test rax,rax
+				jz @f
+					sub rax,10
+					cmp rax,rcx
+					jne @f
+						mov [ptrDeltaWrtHook],rcx
+						mov eax,[fltDeltaWrtHook+10]
+						mov [fltDeltaWrtHook],eax
+						mov [fltDeltaWrtHook+8],eax
+						mulps xmm0,[fltDeltaWrtHook]
+						jmp o_code
+		@@:
+/*
+		mov rax,[ptrDHorseCoordHook]
+		test rax,rax
+		jz @f
+			sub rax,10
+			cmp rax,rcx
+			jne @f
+				mov [ptrDeltaWrtHook+8],rcx
+				mov eax,[fltDeltaWrtDHHook+10]
+				mov [fltDeltaWrtDHHook],eax
+				mov [fltDeltaWrtDHHook+8],eax
+				mulps xmm0,[fltDeltaWrtDHHook]
+				jmp o_code
+*/
+		@@:
+/*
+		mov rax,[ptrDwalkerCoordHook]
+		test rax,rax
+		jz @f
+			sub rax,10
+			cmp rax,rcx
+			jne @f
+				mov [ptrDeltaWrtHook+10],rcx
+				mov eax,[fltDeltaWrtDWHook+10]
+				mov [fltDeltaWrtDWHook],eax
+				mov [fltDeltaWrtDWHook+8],eax
+				mulps xmm0,[fltDeltaWrtDWHook]
+				jmp o_code
+		@@:
+*/
+	o_code:
+		// subps xmm0,[rcx+20]
+		movaps [rcx+40],xmm0
+	exit:
+		pop rax
+		popfq
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injDeltaWrtHook:
+	jmp n_code
+	nop
+	nop
+	nop
+	return:
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injDeltaWrtHook:
+	db bytes
+
+unregisterSymbol(injDeltaWrtHook)
+
+unregisterSymbol(fltDeltaWrtHook)
+unregisterSymbol(fltDeltaWrtDHHook)
+unregisterSymbol(fltDeltaWrtDWHook)
+
+unregisterSymbol(ptrDeltaWrtHook)
+
+dealloc(memDeltaWrtHook)
+
+{
+//// Injection Point: mgsvtpp.exe+C83C161  -  000000014C83C161
+//// AOB address: 000000014C83C15E  -  mgsvtpp.exe+C83C15E
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+C83C117:  0F54 64 24 70               -  andps xmm4,[rsp+70]
+mgsvtpp.exe+C83C11C:  0F56 E1                     -  orps xmm4,xmm1
+mgsvtpp.exe+C83C11F:  41 0F28 C3                  -  movaps xmm0,xmm11
+mgsvtpp.exe+C83C123:  41 0FC6 C3 FF               -  shufps xmm0,xmm11,-01
+mgsvtpp.exe+C83C128:  0F28 CC                     -  movaps xmm1,xmm4
+mgsvtpp.exe+C83C12B:  0F59 C8                     -  mulps xmm1,xmm0
+mgsvtpp.exe+C83C12E:  41 0F28 C3                  -  movaps xmm0,xmm11
+mgsvtpp.exe+C83C132:  41 0FC6 C3 AA               -  shufps xmm0,xmm11,-56
+mgsvtpp.exe+C83C137:  0F28 D5                     -  movaps xmm2,xmm5
+mgsvtpp.exe+C83C13A:  0F59 D0                     -  mulps xmm2,xmm0
+mgsvtpp.exe+C83C13D:  0F58 D1                     -  addps xmm2,xmm1
+mgsvtpp.exe+C83C140:  41 0F28 C3                  -  movaps xmm0,xmm11
+mgsvtpp.exe+C83C144:  41 0FC6 C3 55               -  shufps xmm0,xmm11,55
+mgsvtpp.exe+C83C149:  0F28 CE                     -  movaps xmm1,xmm6
+mgsvtpp.exe+C83C14C:  0F59 C8                     -  mulps xmm1,xmm0
+mgsvtpp.exe+C83C14F:  45 0FC6 DB 00               -  shufps xmm11,xmm11,00
+mgsvtpp.exe+C83C154:  0F28 C7                     -  movaps xmm0,xmm7
+mgsvtpp.exe+C83C157:  41 0F59 C3                  -  mulps xmm0,xmm11
+mgsvtpp.exe+C83C15B:  0F58 C1                     -  addps xmm0,xmm1
+mgsvtpp.exe+C83C15E:  0F58 C2                     -  addps xmm0,xmm2                    &lt;&lt;&lt;--- AOB Starts Here
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+C83C161:  0F5C 41 20                  -  subps xmm0,[rcx+20]
+mgsvtpp.exe+C83C165:  0F29 41 40                  -  movaps [rcx+40],xmm0
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+C83C169:  0F29 B9 F0000000            -  movaps [rcx+000000F0],xmm7
+mgsvtpp.exe+C83C170:  0F29 B1 00010000            -  movaps [rcx+00000100],xmm6
+mgsvtpp.exe+C83C177:  0F29 A9 10010000            -  movaps [rcx+00000110],xmm5
+mgsvtpp.exe+C83C17E:  0F29 A1 20010000            -  movaps [rcx+00000120],xmm4
+mgsvtpp.exe+C83C185:  F7 81 B0010000 00000400     -  test [rcx+000001B0],00040000
+mgsvtpp.exe+C83C18F:  74 7A                       -  je mgsvtpp.exe+C83C20B
+mgsvtpp.exe+C83C191:  0F28 99 A0000000            -  movaps xmm3,[rcx+000000A0]
+mgsvtpp.exe+C83C198:  0F5C 59 20                  -  subps xmm3,[rcx+20]
+mgsvtpp.exe+C83C19C:  F3 0F10 41 24               -  movss xmm0,[rcx+24]
+mgsvtpp.exe+C83C1A1:  F3 0F11 81 84010000         -  movss [rcx+00000184],xmm0
+mgsvtpp.exe+C83C1A9:  89 B9 B4010000              -  mov [rcx+000001B4],edi
+mgsvtpp.exe+C83C1AF:  0F28 D3                     -  movaps xmm2,xmm3
+mgsvtpp.exe+C83C1B2:  0FC6 D3 00                  -  shufps xmm2,xmm3,00
+mgsvtpp.exe+C83C1B6:  C7 44 24 70 FFFFFFFF        -  mov [rsp+70],FFFFFFFF              [00000000]
+mgsvtpp.exe+C83C1BE:  48 89 7C 24 74              -  mov [rsp+74],rdi
+mgsvtpp.exe+C83C1C3:  89 7C 24 7C                 -  mov [rsp+7C],edi
+mgsvtpp.exe+C83C1C7:  0F28 4C 24 70               -  movaps xmm1,[rsp+70]
+mgsvtpp.exe+C83C1CC:  0F55 49 40                  -  andnps xmm1,[rcx+40]
+mgsvtpp.exe+C83C1D0:  0F54 54 24 70               -  andps xmm2,[rsp+70]
+//// Template: I2CEA_AOBFullInjectionWithValues
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>911</ID>
+              <Description>"No description"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>fltDeltaWrtHook+10</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>912</ID>
+      <Description>"瞬间开锁"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address, mgsvtpp.exe+126BB54)
+define(bytes, 0F 2F B7 28 04 00 00)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+aobScanModule(aobLockpickTimerCheckHook, mgsvtpp.exe, 0F85xxxxxxxx0F57xx0F2Fxxxxxxxxxx0F83xxxxxxxx49xxxxxx48)
+// i2aobScanModule(aobLockpickTimerCheckHook, $MODULE_NAME, 0F85xxxxxxxx0F57xx0F2Fxxxxxxxxxx0F83xxxxxxxx49xxxxxx48)
+define(injLockpickTimerCheckHook, aobLockpickTimerCheckHook+9)
+assert(injLockpickTimerCheckHook, bytes)
+// i2assert(injLockpickTimerCheckHook, bytes)
+registerSymbol(injLockpickTimerCheckHook)
+
+alloc(memLockpickTimerCheckHook, 0x400, injLockpickTimerCheckHook)
+
+label(ptrLockpickTimerCheckHook)
+registerSymbol(ptrLockpickTimerCheckHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memLockpickTimerCheckHook:
+	ptrLockpickTimerCheckHook:
+		dq 0
+	align 10 CC
+	n_code:
+		mov [ptrLockpickTimerCheckHook],rdi
+		movss [rdi+428],xmm6
+	o_code:
+		comiss xmm6,[rdi+00000428]
+	exit:
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injLockpickTimerCheckHook:
+	jmp n_code
+	nop
+	nop
+	return:
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injLockpickTimerCheckHook:
+	db bytes
+
+unregisterSymbol(injLockpickTimerCheckHook)
+
+unregisterSymbol(ptrLockpickTimerCheckHook)
+
+dealloc(memLockpickTimerCheckHook)
+
+{
+//// Injection Point: mgsvtpp.exe+126BB54  -  000000014126BB54
+//// AOB address: 000000014126BB4B  -  mgsvtpp.exe+126BB4B
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+126BB02:  74 3B                       -  je mgsvtpp.exe+126BB3F
+mgsvtpp.exe+126BB04:  8B CE                       -  mov ecx,esi
+mgsvtpp.exe+126BB06:  2B 4B 08                    -  sub ecx,[rbx+08]
+mgsvtpp.exe+126BB09:  48 C1 E1 05                 -  shl rcx,05
+mgsvtpp.exe+126BB0D:  48 03 8B 80020000           -  add rcx,[rbx+00000280]
+mgsvtpp.exe+126BB14:  81 49 14 00100000           -  or [rcx+14],00001000
+mgsvtpp.exe+126BB1B:  49 8B 46 08                 -  mov rax,[r14+08]
+mgsvtpp.exe+126BB1F:  48 8B 48 78                 -  mov rcx,[rax+78]
+mgsvtpp.exe+126BB23:  2B 71 08                    -  sub esi,[rcx+08]
+mgsvtpp.exe+126BB26:  8B C6                       -  mov eax,esi
+mgsvtpp.exe+126BB28:  48 C1 E0 05                 -  shl rax,05
+mgsvtpp.exe+126BB2C:  48 03 81 80020000           -  add rax,[rcx+00000280]
+mgsvtpp.exe+126BB33:  81 48 14 00400000           -  or [rax+14],00004000
+mgsvtpp.exe+126BB3A:  E9 B2040000                 -  jmp mgsvtpp.exe+126BFF1
+mgsvtpp.exe+126BB3F:  8B D6                       -  mov edx,esi
+mgsvtpp.exe+126BB41:  49 8B CE                    -  mov rcx,r14
+mgsvtpp.exe+126BB44:  E8 7771D9FF                 -  call mgsvtpp.exe+1002CC0
+mgsvtpp.exe+126BB49:  84 C0                       -  test al,al
+mgsvtpp.exe+126BB4B:  0F85 A0040000               -  jne mgsvtpp.exe+126BFF1            &lt;&lt;&lt;--- AOB Starts Here
+mgsvtpp.exe+126BB51:  0F57 F6                     -  xorps xmm6,xmm6
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+126BB54:  0F2F B7 28040000            -  comiss xmm6,[rdi+00000428]
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+126BB5B:  0F83 90040000               -  jae mgsvtpp.exe+126BFF1
+mgsvtpp.exe+126BB61:  49 8B 46 08                 -  mov rax,[r14+08]
+mgsvtpp.exe+126BB65:  48 8B 88 38010000           -  mov rcx,[rax+00000138]
+mgsvtpp.exe+126BB6C:  48 8B 89 B0000000           -  mov rcx,[rcx+000000B0]
+mgsvtpp.exe+126BB73:  48 8B 01                    -  mov rax,[rcx]
+mgsvtpp.exe+126BB76:  FF 50 20                    -  call qword ptr [rax+20]
+mgsvtpp.exe+126BB79:  C1 E8 03                    -  shr eax,03
+mgsvtpp.exe+126BB7C:  A8 01                       -  test al,01
+mgsvtpp.exe+126BB7E:  0F85 E0020000               -  jne mgsvtpp.exe+126BE64
+mgsvtpp.exe+126BB84:  49 8B 46 08                 -  mov rax,[r14+08]
+mgsvtpp.exe+126BB88:  48 8B 88 38010000           -  mov rcx,[rax+00000138]
+mgsvtpp.exe+126BB8F:  48 8B 81 B0000000           -  mov rax,[rcx+000000B0]
+mgsvtpp.exe+126BB96:  F6 40 2C 01                 -  test byte ptr [rax+2C],01
+mgsvtpp.exe+126BB9A:  0F85 51040000               -  jne mgsvtpp.exe+126BFF1
+mgsvtpp.exe+126BBA0:  F3 0F10 40 10               -  movss xmm0,[rax+10]
+mgsvtpp.exe+126BBA5:  0F2F 05 F4A1E500            -  comiss xmm0,[mgsvtpp.exe+20C5DA0]
+mgsvtpp.exe+126BBAC:  0F86 3F040000               -  jbe mgsvtpp.exe+126BFF1
+mgsvtpp.exe+126BBB2:  F6 40 2C 01                 -  test byte ptr [rax+2C],01
+mgsvtpp.exe+126BBB6:  44 0F29 8C 24 D0000000      -  movaps [rsp+000000D0],xmm9
+mgsvtpp.exe+126BBBF:  44 0F29 94 24 C0000000      -  movaps [rsp+000000C0],xmm10
+//// Template: I2CEA_AOBFullInjection
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>913</ID>
+      <Description>"按住动作时间"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+	Process				: mgsvtpp.exe  -  (x64)
+	Module				: mgsvtpp.exe
+	Game Title			: Metal Gear Solid 5: The Phantom Pain
+	Game File Version 	: 1.0.15.3
+	Game Version		: 1.15
+	CE Version			: 7.2
+	Script Version		: 6.0.1
+	Date				: 05/23/21
+	Author				: TheyCallMeTim13
+	Name				: ActionHoldHook
+
+	Action Hold Hook
+
+	rbp : 1  : A button / ??
+	rbp : 3  : Left trigger / Right Mouse Buttton
+	rbp : 5  : Y button / E key
+	rbp : 7  : R-Stick / ??
+	rbp : A  : R1 / ??
+	rbp : B  : Up D-Pad / ??
+	rbp : F  : Right trigger / Left Mouse Buttton
+	rbp : 12 : X button / ??
+	rbp : 40 : B button / R key
+	rbp : 6 : B button / R key
+}
+{$STRICT}
+
+define(address, mgsvtpp.exe+B03BDF)
+define(bytes, 0F 2F 05)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+// aobScanModule(aobActionHoldHook, mgsvtpp.exe, 0F2Fxxxxxxxxxx76xxF3xxxxxx0F2FxxxxxxxxxxF3xxxxxxxx76xxC7)
+define(aobActionHoldHook,address-D)
+// i2aobScanModule(aobActionHoldHook, $MODULE_NAME, 0F2Fxxxxxxxxxx76xxF3xxxxxx0F2FxxxxxxxxxxF3xxxxxxxx76xxC7)
+define(injActionHoldHook, aobActionHoldHook+D)
+assert(injActionHoldHook, bytes)
+// i2assert(injActionHoldHook, bytes)
+registerSymbol(injActionHoldHook)
+
+alloc(memActionHoldHook, 0x400, injActionHoldHook)
+
+label(fltActionHoldHook)
+registerSymbol(fltActionHoldHook)
+label(flgActionHoldHook)
+registerSymbol(flgActionHoldHook) {
+00:Disabled
+01:All Actions
+02:Some Actions
+}
+
+label(ptrActionHoldHook)
+registerSymbol(ptrActionHoldHook)
+
+label(instActionHoldHook_ocode)
+registerSymbol(instActionHoldHook_ocode)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memActionHoldHook:
+	fltActionHoldHook:
+		dd (float)0.1875  // Delay for reloading
+		dd (float)1
+	flgActionHoldHook:
+		db 02 // Flag
+	align 10
+	ptrActionHoldHook:
+		dq 0
+	align 10 CC
+	n_code:
+		mov [ptrActionHoldHook],rbx
+		cmp byte ptr [flgActionHoldHook],0
+		je o_code
+		cmp byte ptr [flgActionHoldHook],1
+		jne @f
+			movss xmm0,[fltActionHoldHook+4]
+			jmp o_code
+		@@:
+		cmp byte ptr [flgActionHoldHook],2
+		jne @f
+			cmp rbp,1 // A button / ??
+			je o_code
+			cmp rbp,3 // Left trigger / Right Mouse Buttton
+			je o_code
+			cmp rbp,7 // R-Stick / ??
+			je o_code
+			cmp rbp,A // R1 / ??
+			je o_code
+			cmp rbp,B // Up D-Pad / ??
+			je o_code
+			cmp rbp,F // Right trigger / Left Mouse Buttton
+			je o_code
+			cmp rbp,12 // X button / ??
+			je o_code
+				comiss xmm0,[fltActionHoldHook]
+				jb o_code
+					movss xmm0,[fltActionHoldHook+4]
+					jmp o_code
+		@@:
+		mov byte ptr [flgActionHoldHook],0
+	o_code:
+		reassemble(injActionHoldHook) // comiss xmm0,[mgsvtpp.exe+20991EC]
+	exit:
+		jmp return
+	align 10 CC
+	instActionHoldHook_ocode:
+		readMem(injActionHoldHook, 7)
+
+
+////
+//// ---------- Injection Point ----------
+injActionHoldHook:
+	jmp n_code
+	nop
+	nop
+	return:
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injActionHoldHook:
+	readMem(instActionHoldHook_ocode, 7)
+
+unregisterSymbol(injActionHoldHook)
+
+unregisterSymbol(fltActionHoldHook)
+unregisterSymbol(flgActionHoldHook)
+
+unregisterSymbol(ptrActionHoldHook)
+
+unregisterSymbol(instActionHoldHook_ocode)
+
+dealloc(memActionHoldHook)
+
+{
+//// Injection Point: mgsvtpp.exe+B03BDF  -  0000000140B03BDF
+//// AOB address: 0000000140B03BD2  -  mgsvtpp.exe+B03BD2
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+B03B8D:  83 F8 01                    -  cmp eax,01
+mgsvtpp.exe+B03B90:  75 7A                       -  jne mgsvtpp.exe+B03C0C
+mgsvtpp.exe+B03B92:  48 8B 07                    -  mov rax,[rdi]
+mgsvtpp.exe+B03B95:  BA 01000000                 -  mov edx,00000001
+mgsvtpp.exe+B03B9A:  48 8B CF                    -  mov rcx,rdi
+mgsvtpp.exe+B03B9D:  FF 50 78                    -  call qword ptr [rax+78]
+mgsvtpp.exe+B03BA0:  0F28 C8                     -  movaps xmm1,xmm0
+mgsvtpp.exe+B03BA3:  40 84 F6                    -  test sil,sil
+mgsvtpp.exe+B03BA6:  75 4E                       -  jne mgsvtpp.exe+B03BF6
+mgsvtpp.exe+B03BA8:  44 89 63 18                 -  mov [rbx+18],r12d
+mgsvtpp.exe+B03BAC:  48 8B 87 70020000           -  mov rax,[rdi+00000270]
+mgsvtpp.exe+B03BB3:  44 89 63 04                 -  mov [rbx+04],r12d
+mgsvtpp.exe+B03BB7:  48 89 43 08                 -  mov [rbx+08],rax
+mgsvtpp.exe+B03BBB:  F3 0F10 43 04               -  movss xmm0,[rbx+04]
+mgsvtpp.exe+B03BC0:  0F2F 05 B5E85A01            -  comiss xmm0,[mgsvtpp.exe+20B247C]
+mgsvtpp.exe+B03BC7:  0F86 84000000               -  jbe mgsvtpp.exe+B03C51
+mgsvtpp.exe+B03BCD:  F3 0F10 4B 10               -  movss xmm1,[rbx+10]
+mgsvtpp.exe+B03BD2:  0F2F 0D A3E85A01            -  comiss xmm1,[mgsvtpp.exe+20B247C]  &lt;&lt;&lt;--- AOB Starts Here
+mgsvtpp.exe+B03BD9:  76 76                       -  jna mgsvtpp.exe+B03C51
+mgsvtpp.exe+B03BDB:  F3 0F5E C1                  -  divss xmm0,xmm1
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+B03BDF:  0F2F 05 A6365A01            -  comiss xmm0,[mgsvtpp.exe+20A728C]
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+B03BE6:  F3 0F11 43 14               -  movss [rbx+14],xmm0
+mgsvtpp.exe+B03BEB:  76 68                       -  jna mgsvtpp.exe+B03C55
+mgsvtpp.exe+B03BED:  C7 43 14 0000803F           -  mov [rbx+14],3F800000              [00000000]
+mgsvtpp.exe+B03BF4:  EB 5F                       -  jmp mgsvtpp.exe+B03C55
+mgsvtpp.exe+B03BF6:  8B 43 20                    -  mov eax,[rbx+20]
+mgsvtpp.exe+B03BF9:  A8 08                       -  test al,08
+mgsvtpp.exe+B03BFB:  74 0F                       -  je mgsvtpp.exe+B03C0C
+mgsvtpp.exe+B03BFD:  F3 0F10 43 18               -  movss xmm0,[rbx+18]
+mgsvtpp.exe+B03C02:  0F2F C8                     -  comiss xmm1,xmm0
+mgsvtpp.exe+B03C05:  72 32                       -  jb mgsvtpp.exe+B03C39
+mgsvtpp.exe+B03C07:  F3 0F11 4B 18               -  movss [rbx+18],xmm1
+mgsvtpp.exe+B03C0C:  40 84 F6                    -  test sil,sil
+mgsvtpp.exe+B03C0F:  74 9B                       -  je mgsvtpp.exe+B03BAC
+mgsvtpp.exe+B03C11:  F2 0F10 87 70020000         -  movsd xmm0,[rdi+00000270]
+mgsvtpp.exe+B03C19:  F2 0F5C 43 08               -  subsd xmm0,[rbx+08]
+mgsvtpp.exe+B03C1E:  66 0F5A C8                  -  cvtpd2ps xmm1,xmm0
+mgsvtpp.exe+B03C22:  0F2F 0D 53E85A01            -  comiss xmm1,[mgsvtpp.exe+20B247C]
+mgsvtpp.exe+B03C29:  F3 0F11 4B 04               -  movss [rbx+04],xmm1
+mgsvtpp.exe+B03C2E:  77 8B                       -  ja mgsvtpp.exe+B03BBB
+mgsvtpp.exe+B03C30:  C7 43 04 D171DA3A           -  mov [rbx+04],3ADA71D1              [00000000]
+//// Template: I2CEA_AOBFullInjectionWithValues
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Activate</Action>
+          <Keys>
+            <Key>18</Key>
+            <Key>97</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>84447</ID>
+          <Description>"Flag 模式(关/全部动作/部分动作)"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">00:Disabled
+01:All Actions
+02:Some Actions
+</DropDownList>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>FF00FF</Color>
+          <VariableType>Byte</VariableType>
+          <Address>flgActionHoldHook</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>84448</ID>
+          <Description>"Delay For Reloading (0 to 1) 装弹延迟(0-1)"</Description>
+          <Color>FF00FF</Color>
+          <VariableType>Float</VariableType>
+          <Address>fltActionHoldHook</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>84449</ID>
+      <Description>"WeaponHook"</Description>
+      <Options moHideChildren="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+	Process				: mgsvtpp.exe  -  (x64)
+	Module				: mgsvtpp.exe
+	Game Title			: Metal Gear Solid 5: The Phantom Pain
+	Game File Version 	: 1.0.15.3
+	Game Version		: 1.15
+	CE Version			: 7.2
+	Script Version		: 6.0.1
+	Date				: 05/22/21
+	Author				: TheyCallMeTim13
+	Name				: WeaponHook
+
+	Weapon Hook
+}
+{$STRICT}
+
+define(address, mgsvtpp.exe+108D1BC)
+define(bytes, 44 0F B7 3C 4A)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+//aobScanModule(aobWeaponHook, mgsvtpp.exe, F7xxxxxxxxxxxxxxxxxx4Bxxxxxx44xxxxxxxx4Bxxxxxx44xxxxxxxxxx0F84xxxxxxxx0FB7)
+define(aobWeaponHook,address-E)
+// i2aobScanModule(aobWeaponHook, $MODULE_NAME, F7xxxxxxxxxxxxxxxxxx4Bxxxxxx44xxxxxxxx4Bxxxxxx44xxxxxxxxxx0F84xxxxxxxx0FB7)
+define(injWeaponHook, aobWeaponHook+E)
+assert(injWeaponHook, bytes)
+// i2assert(injWeaponHook, bytes)
+registerSymbol(injWeaponHook)
+
+alloc(memWeaponHook, 0x400, injWeaponHook)
+
+label(ptrWeaponHook)
+registerSymbol(ptrWeaponHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memWeaponHook:
+	ptrWeaponHook:
+		dq 0
+	align 10 CC
+	n_code:
+		mov [ptrWeaponHook],rdx
+	o_code:
+		movzx r15d,word ptr [rdx+rcx*2]
+	exit:
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injWeaponHook:
+	jmp n_code
+	return:
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injWeaponHook:
+	db bytes
+
+unregisterSymbol(injWeaponHook)
+
+unregisterSymbol(ptrWeaponHook)
+
+dealloc(memWeaponHook)
+
+{
+//// Injection Point: mgsvtpp.exe+108D1BC  -  000000014108D1BC
+//// AOB address: 000000014108D1AE  -  mgsvtpp.exe+108D1AE
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+108D159:  C3                          -  ret
+mgsvtpp.exe+108D15A:  8B 8A 7C020000              -  mov ecx,[rdx+0000027C]
+mgsvtpp.exe+108D160:  48 89 9C 24 80000000        -  mov [rsp+00000080],rbx
+mgsvtpp.exe+108D168:  48 89 7C 24 48              -  mov [rsp+48],rdi
+mgsvtpp.exe+108D16D:  C1 E9 06                    -  shr ecx,06
+mgsvtpp.exe+108D170:  4C 89 64 24 40              -  mov [rsp+40],r12
+mgsvtpp.exe+108D175:  4C 89 74 24 38              -  mov [rsp+38],r14
+mgsvtpp.exe+108D17A:  83 E1 07                    -  and ecx,07
+mgsvtpp.exe+108D17D:  4C 89 7C 24 30              -  mov [rsp+30],r15
+mgsvtpp.exe+108D182:  83 F9 01                    -  cmp ecx,01
+mgsvtpp.exe+108D185:  0F85 DA010000               -  jne mgsvtpp.exe+108D365
+mgsvtpp.exe+108D18B:  49 8B 81 C8000000           -  mov rax,[r9+000000C8]
+mgsvtpp.exe+108D192:  4C 8B 60 08                 -  mov r12,[rax+08]
+mgsvtpp.exe+108D196:  0FB6 82 DA030000            -  movzx eax,byte ptr [rdx+000003DA]
+mgsvtpp.exe+108D19D:  45 8B 44 24 0C              -  mov r8d,[r12+0C]
+mgsvtpp.exe+108D1A2:  49 8B 54 24 50              -  mov rdx,[r12+50]
+mgsvtpp.exe+108D1A7:  45 0FAF C5                  -  imul r8d,r13d
+mgsvtpp.exe+108D1AB:  44 03 C0                    -  add r8d,eax
+mgsvtpp.exe+108D1AE:  F7 86 D0030000 00000008     -  test [rsi+000003D0],08000000       &lt;&lt;&lt;--- AOB Starts Here
+mgsvtpp.exe+108D1B8:  4B 8D 0C 40                 -  lea rcx,[r8+r8*2]
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+108D1BC:  44 0FB7 3C 4A               -  movzx r15d,word ptr [rdx+rcx*2]
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+108D1C1:  4B 8D 0C 40                 -  lea rcx,[r8+r8*2]
+mgsvtpp.exe+108D1C5:  44 0FB7 74 4A 02            -  movzx r14d,word ptr [rdx+rcx*2+02]
+mgsvtpp.exe+108D1CB:  0F84 18010000               -  je mgsvtpp.exe+108D2E9
+mgsvtpp.exe+108D1D1:  0FB7 86 FE050000            -  movzx eax,word ptr [rsi+000005FE]
+mgsvtpp.exe+108D1D8:  49 8B 59 48                 -  mov rbx,[r9+48]
+mgsvtpp.exe+108D1DC:  BF C83F0000                 -  mov edi,00003FC8
+mgsvtpp.exe+108D1E1:  66 33 C7                    -  xor ax,di
+mgsvtpp.exe+108D1E4:  48 81 C3 F8020000           -  add rbx,000002F8
+mgsvtpp.exe+108D1EB:  66 44 3B F8                 -  cmp r15w,ax
+mgsvtpp.exe+108D1EF:  75 10                       -  jne mgsvtpp.exe+108D201
+mgsvtpp.exe+108D1F1:  0FB7 86 00060000            -  movzx eax,word ptr [rsi+00000600]
+mgsvtpp.exe+108D1F8:  66 33 C7                    -  xor ax,di
+mgsvtpp.exe+108D1FB:  66 44 3B F0                 -  cmp r14w,ax
+mgsvtpp.exe+108D1FF:  74 1E                       -  je mgsvtpp.exe+108D21F
+mgsvtpp.exe+108D201:  8B 4B 20                    -  mov ecx,[rbx+20]
+mgsvtpp.exe+108D204:  81 F1 2FEA9DB4              -  xor ecx,B49DEA2F                   [00000000]
+mgsvtpp.exe+108D20A:  FF C1                       -  inc ecx
+mgsvtpp.exe+108D20C:  8B C1                       -  mov eax,ecx
+mgsvtpp.exe+108D20E:  35 2FEA9DB4                 -  xor eax,B49DEA2F                   [00000000]
+mgsvtpp.exe+108D213:  81 F1 ACD5FB94              -  xor ecx,94FBD5AC
+//// Template: I2CEA_AOBFullInjection
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Activate</Action>
+          <Keys>
+            <Key>18</Key>
+            <Key>97</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>84450</ID>
+          <Description>"武器全自动开火"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{
+	Process				: mgsvtpp.exe  -  (x64)
+	Module				: mgsvtpp.exe
+	Game Title			: Metal Gear Solid 5: The Phantom Pain
+	Game File Version 	: 1.0.15.3
+	Game Version		: 1.15
+	CE Version			: 7.2
+	Script Version		: 6.0.1
+	Date				: 05/23/21
+	Author				: TheyCallMeTim13
+	Name				: WeaponTriggerStateWrtHook
+
+	Weapon Trigger State Wrt Hook
+}
+{$STRICT}
+
+define(address, mgsvtpp.exe+9755CE7)
+define(bytes, 44 09 8A 7C 02 00 00)
+
+////
+//// ------------------------------ ENABLE ------------------------------
+[ENABLE]
+//aobScanModule(aobWeaponTriggerStateWrtHook, mgsvtpp.exe, 83xxxxxxxxxxxx41xxxxxx48xxxx41xxxxxx44xxxxxxxxxxxx80)
+define(aobWeaponTriggerStateWrtHook,address-12)
+// i2aobScanModule(aobWeaponTriggerStateWrtHook, $MODULE_NAME, 83xxxxxxxxxxxx41xxxxxx48xxxx41xxxxxx44xxxxxxxxxxxx80)
+define(injWeaponTriggerStateWrtHook, aobWeaponTriggerStateWrtHook+12)
+assert(injWeaponTriggerStateWrtHook, bytes)
+// i2assert(injWeaponTriggerStateWrtHook, bytes)
+registerSymbol(injWeaponTriggerStateWrtHook)
+
+alloc(memWeaponTriggerStateWrtHook, 0x400, injWeaponTriggerStateWrtHook)
+
+label(ptrWeaponTriggerStateWrtHook)
+registerSymbol(ptrWeaponTriggerStateWrtHook)
+
+label(n_code)
+label(o_code)
+label(exit)
+label(return)
+
+memWeaponTriggerStateWrtHook:
+	ptrWeaponTriggerStateWrtHook:
+		dq 0
+	align 10 CC
+	n_code:
+		pushfq
+		push rax
+		push rbx
+		mov [ptrWeaponTriggerStateWrtHook],rdx
+		or [rdx+27C],r9d
+		mov rax,[ptrWeaponHook]
+		test rax,rax
+		jz o_code
+			xor rbx,rbx
+			mov bx,[rax+1CC]
+			imul bx,bx,6
+			cmp byte ptr [rax+rbx+5],16
+			je o_code
+			cmp byte ptr [rax+rbx+5],17
+			je o_code
+				mov byte ptr [rdx+27F],01
+	o_code:
+		// or [rdx+0000027C],r9d
+	exit:
+		pop rbx
+		pop rax
+		popfq
+		jmp return
+
+
+////
+//// ---------- Injection Point ----------
+injWeaponTriggerStateWrtHook:
+	jmp n_code
+	nop
+	nop
+	return:
+
+
+////
+//// ------------------------------ DISABLE ------------------------------
+[DISABLE]
+////
+//// ---------- Injection Point ----------
+injWeaponTriggerStateWrtHook:
+	db bytes
+
+unregisterSymbol(injWeaponTriggerStateWrtHook)
+
+unregisterSymbol(ptrWeaponTriggerStateWrtHook)
+
+dealloc(memWeaponTriggerStateWrtHook)
+
+{
+//// Injection Point: mgsvtpp.exe+9755CE7  -  0000000149755CE7
+//// AOB address: 0000000149755CD5  -  mgsvtpp.exe+9755CD5
+//// Process: mgsvtpp.exe  -  0000000140000000
+//// Module: mgsvtpp.exe  -  0000000140000000
+//// Module Size: 000000000DB7B000
+mgsvtpp.exe+9755C9D:  C7                          -  db -39
+mgsvtpp.exe+9755C9E:  4C 8B 04 24                 -  mov r8,[rsp]
+mgsvtpp.exe+9755CA2:  48 83 C4 08                 -  add rsp,08
+mgsvtpp.exe+9755CA6:  48 8B 1C 24                 -  mov rbx,[rsp]
+mgsvtpp.exe+9755CAA:  48 89 3C 24                 -  mov [rsp],rdi
+mgsvtpp.exe+9755CAE:  48 8D 3D 4B29A702           -  lea rdi,[mgsvtpp.exe+C1C8600]      [48018B48]
+mgsvtpp.exe+9755CB5:  48 87 3C 24                 -  xchg [rsp],rdi
+mgsvtpp.exe+9755CB9:  C3                          -  ret
+mgsvtpp.exe+9755CBA:  9D                          -  popfq
+mgsvtpp.exe+9755CBB:  41 54                       -  push r12
+mgsvtpp.exe+9755CBD:  4C 8D 25 0CF1E203           -  lea r12,[mgsvtpp.exe+D584DD0]      [24548948]
+mgsvtpp.exe+9755CC4:  4C 87 24 24                 -  xchg [rsp],r12
+mgsvtpp.exe+9755CC8:  C3                          -  ret
+mgsvtpp.exe+9755CC9:  0F1F 80 00000000            -  nop dword ptr [rax+00000000]
+mgsvtpp.exe+9755CD0:  53                          -  push rbx
+mgsvtpp.exe+9755CD1:  48 83 EC 70                 -  sub rsp,70
+mgsvtpp.exe+9755CD5:  83 A2 7C020000 F3           -  and dword ptr [rdx+0000027C],-0D   &lt;&lt;&lt;--- AOB Starts Here
+mgsvtpp.exe+9755CDC:  41 83 E1 03                 -  and r9d,03
+mgsvtpp.exe+9755CE0:  48 89 CB                    -  mov rbx,rcx
+mgsvtpp.exe+9755CE3:  41 C1 E1 02                 -  shl r9d,02
+////  INJECTING START  ----------------------------------------------------------
+mgsvtpp.exe+9755CE7:  44 09 8A 7C020000           -  or [rdx+0000027C],r9d
+////  INJECTING END  ----------------------------------------------------------
+mgsvtpp.exe+9755CEE:  80 BA DA030000 02           -  cmp byte ptr [rdx+000003DA],02
+mgsvtpp.exe+9755CF5:  75 5B                       -  jne mgsvtpp.exe+9755D52
+mgsvtpp.exe+9755CF7:  83 BA 4C020000 00           -  cmp dword ptr [rdx+0000024C],00
+mgsvtpp.exe+9755CFE:  74 52                       -  je mgsvtpp.exe+9755D52
+mgsvtpp.exe+9755D00:  48 8B 41 08                 -  mov rax,[rcx+08]
+mgsvtpp.exe+9755D04:  48 8D 54 24 30              -  lea rdx,[rsp+30]
+mgsvtpp.exe+9755D09:  48 8B 48 78                 -  mov rcx,[rax+78]
+mgsvtpp.exe+9755D0D:  48 8B 89 38020000           -  mov rcx,[rcx+00000238]
+mgsvtpp.exe+9755D14:  48 8B 01                    -  mov rax,[rcx]
+mgsvtpp.exe+9755D17:  FF 90 A0000000              -  call qword ptr [rax+000000A0]
+mgsvtpp.exe+9755D1D:  48 8B 4B 68                 -  mov rcx,[rbx+68]
+mgsvtpp.exe+9755D21:  0F10 44 24 30               -  movups xmm0,[rsp+30]
+mgsvtpp.exe+9755D26:  48 8B 01                    -  mov rax,[rcx]
+mgsvtpp.exe+9755D29:  48 8D 54 24 50              -  lea rdx,[rsp+50]
+mgsvtpp.exe+9755D2E:  49 B8 AFC860AE39FE0000      -  mov r8,0000FE39AE60C8AF
+mgsvtpp.exe+9755D38:  0F10 4C 24 40               -  movups xmm1,[rsp+40]
+mgsvtpp.exe+9755D3D:  0F29 44 24 50               -  movaps [rsp+50],xmm0
+mgsvtpp.exe+9755D42:  45 31 C9                    -  xor r9d,r9d
+mgsvtpp.exe+9755D45:  C6 44 24 20 00              -  mov byte ptr [rsp+20],00
+mgsvtpp.exe+9755D4A:  0F29 4C 24 60               -  movaps [rsp+60],xmm1
+//// Template: I2CEA_AOBFullInjection
+//// Generated with: I2 Cheat Engine Auto Assembler Script Template Generator
+//// Code Happy, Code Freely, Be Awesome.
+}
+
+
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <CheatCodes>
@@ -16968,6 +18476,75 @@ mgsvtpp.exe+DEF9F4 - 8B 44 24 34           - mov eax,[rsp+34]
         <Byte>01</Byte>
       </After>
     </CodeEntry>
+    <CodeEntry>
+      <Description>一个应用静静命令的地方 :add rdi,rdi</Description>
+      <AddressString>mgsvtpp.exe+717EBA2</AddressString>
+      <Before>
+        <Byte>24</Byte>
+        <Byte>58</Byte>
+        <Byte>00</Byte>
+        <Byte>74</Byte>
+        <Byte>60</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>01</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+        <Byte>8D</Byte>
+        <Byte>E0</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>使静静重新复位 Code :je mgsvtpp.exe+717B173</Description>
+      <AddressString>mgsvtpp.exe+717B193</AddressString>
+      <Before>
+        <Byte>C1</Byte>
+        <Byte>E8</Byte>
+        <Byte>03</Byte>
+        <Byte>A8</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>DE</Byte>
+      </Actual>
+      <After>
+        <Byte>30</Byte>
+        <Byte>C0</Byte>
+        <Byte>C3</Byte>
+        <Byte>41</Byte>
+        <Byte>21</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>静静状态改变？:add rdi,[rax+08]</Description>
+      <AddressString>mgsvtpp.exe+D061B8</AddressString>
+      <Before>
+        <Byte>E7</Byte>
+        <Byte>09</Byte>
+        <Byte>4C</Byte>
+        <Byte>8B</Byte>
+        <Byte>E9</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+        <Byte>78</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>45</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>74</Byte>
+        <Byte>24</Byte>
+      </After>
+    </CodeEntry>
   </CheatCodes>
   <UserdefinedSymbols>
     <SymbolEntry>
@@ -17145,10 +18722,6 @@ mgsvtpp.exe+DEF9F4 - 8B 44 24 34           - mov eax,[rsp+34]
     <SymbolEntry>
       <Name>mark_tele</Name>
       <Address>1437D8C7E</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>timer1</Name>
-      <Address>143772FEF</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
   <Structures StructVersion="2">
