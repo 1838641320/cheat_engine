@@ -3462,7 +3462,7 @@ label(originalcode)
 label(exit)
 
 newmem: //this is allocated memory, you have read,write,execute access
-mov ebx,9
+mov ebx,99
 
 originalcode:
 je mgsvtpp.exe+10425DE
@@ -3558,6 +3558,18 @@ dealloc(newmem)
 db F3 0F 11 B6 24 03 00 00
 //movss [rsi+00000324],xmm6
 </AssemblerScript>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Toggle Activation</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>98</Key>
+              </Keys>
+              <ID>0</ID>
+              <ActivateSound>Activate</ActivateSound>
+              <DeactivateSound>Deactivate</DeactivateSound>
+            </Hotkey>
+          </Hotkeys>
         </CheatEntry>
         <CheatEntry>
           <ID>766</ID>
@@ -17468,7 +17480,7 @@ label(return)
 
 memActionHoldHook:
 	fltActionHoldHook:
-		dd (float)0.1875  // Delay for reloading
+		dd (float)0.125  // Delay for reloading
 		dd (float)1
 	flgActionHoldHook:
 		db 02 // Flag
