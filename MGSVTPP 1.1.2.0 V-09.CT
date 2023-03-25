@@ -17945,6 +17945,106 @@ mgsvtpp.exe+9755D4A:  0F29 4C 24 60               -  movaps [rsp+60],xmm1
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
+    <CheatEntry>
+      <ID>84452</ID>
+      <Description>"修改游戏进行速度"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"mgsvtpp.exe"+3189848)
+assert("mgsvtpp.exe"+3189848,f3 0f 11 77 0c)
+registersymbol(game_speed)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+cmp [game_speed],00
+je @f
+movss xmm6,[game_speed]
+movss [rdi+0c],xmm6
+
+@@:
+
+originalcode:
+
+exit:
+jmp returnhere
+align 10 cc
+
+game_speed:
+dq 0
+
+
+"mgsvtpp.exe"+3189848:
+jmp newmem
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+unregistersymbol(game_speed)
+dealloc(newmem)
+"mgsvtpp.exe"+3189848:
+db f3 0f 11 77 0c
+//mgsvtpp.exe+3189848 - F3 0F11 77 0C         - movss [rdi+0C],xmm6
+
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Activate</Action>
+          <Keys>
+            <Key>18</Key>
+            <Key>97</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>84453</ID>
+          <Description>"游戏速度"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>game_speed</Address>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>99</Key>
+              </Keys>
+              <Value>5</Value>
+              <ID>0</ID>
+              <ActivateSound TTS="EN">5</ActivateSound>
+            </Hotkey>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>100</Key>
+              </Keys>
+              <Value>0.2</Value>
+              <ID>1</ID>
+              <ActivateSound TTS="EN">0.2</ActivateSound>
+            </Hotkey>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>101</Key>
+              </Keys>
+              <Value>1</Value>
+              <ID>2</ID>
+              <ActivateSound TTS="EN">1</ActivateSound>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
   </CheatEntries>
   <CheatCodes>
     <CodeEntry>
