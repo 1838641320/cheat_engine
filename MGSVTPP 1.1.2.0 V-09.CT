@@ -17647,7 +17647,7 @@ mgsvtpp.exe+B03C30:  C7 43 04 D171DA3A           -  mov [rbx+04],3ADA71D1       
     <CheatEntry>
       <ID>84449</ID>
       <Description>"WeaponHook"</Description>
-      <Options moHideChildren="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1"/>
+      <Options moHideChildren="1"/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>{
 	Process				: mgsvtpp.exe  -  (x64)
@@ -17839,26 +17839,26 @@ memWeaponTriggerStateWrtHook:
 	align 10 CC
 	n_code:
 		pushfq
-		push rax
-		push rbx
+		//push rax
+		//push rbx
 		mov [ptrWeaponTriggerStateWrtHook],rdx
 		or [rdx+27C],r9d
-		mov rax,[ptrWeaponHook]
-		test rax,rax
-		jz o_code
-			xor rbx,rbx
-			mov bx,[rax+1CC]
-			imul bx,bx,6
-			cmp byte ptr [rax+rbx+5],16
-			je o_code
-			cmp byte ptr [rax+rbx+5],17
-			je o_code
-				mov byte ptr [rdx+27F],01
+		//mov rax,[ptrWeaponHook]
+		//test rax,rax
+		//jz o_code
+		//xor rbx,rbx
+		//mov bx,[rax+1CC]
+		//imul bx,bx,6
+		//cmp byte ptr [rax+rbx+5],16
+	    //je o_code
+		//cmp byte ptr [rax+rbx+5],17
+		//je o_code
+	    mov byte ptr [rdx+27F],01
 	o_code:
 		// or [rdx+0000027C],r9d
 	exit:
-		pop rbx
-		pop rax
+		//pop rbx
+		//pop rax
 		popfq
 		jmp return
 
@@ -17942,6 +17942,36 @@ mgsvtpp.exe+9755D4A:  0F29 4C 24 60               -  movaps [rsp+60],xmm1
 
 
 </AssemblerScript>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Activate</Action>
+              <Keys>
+                <Key>18</Key>
+                <Key>97</Key>
+              </Keys>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>84454</ID>
+          <Description>"No description"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>ptrWeaponHook</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>84455</ID>
+          <Description>"No description"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>ptrWeaponHook</Address>
+          <Offsets>
+            <Offset>2</Offset>
+          </Offsets>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -17952,11 +17982,12 @@ mgsvtpp.exe+9755D4A:  0F29 4C 24 60               -  movaps [rsp+60],xmm1
       <AssemblerScript>[ENABLE]
 //code from here to '[DISABLE]' will be used to enable the cheat
 alloc(newmem,2048,"mgsvtpp.exe"+3189848)
-assert("mgsvtpp.exe"+3189848,f3 0f 11 77 0c)
+//assert("mgsvtpp.exe"+3189848,f3 0f 11 77 0c)
 registersymbol(game_speed)
 label(returnhere)
 label(originalcode)
 label(exit)
+label(game_speed)
 
 newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
