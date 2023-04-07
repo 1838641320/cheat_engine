@@ -16466,7 +16466,7 @@ newmem: //this is allocated memory, you have read,write,execute access
 
 originalcode:
 //mov [rcx],eax
-mov [rcx],70000
+mov [rcx],7000
 test byte ptr [rdi+14],01
 
 exit:
@@ -18073,6 +18073,29 @@ db f3 0f 11 77 0c
               <ActivateSound TTS="EN">1</ActivateSound>
             </Hotkey>
           </Hotkeys>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>84456</ID>
+      <Description>"获取风灵月影修改地址"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+aobscan(fenglingyueying,FF 25 00 00 00 00 * * * * * * * * 0 0 FF 25 00 00 00 00 * * * * * * * * 0 0 FF 25 00 00 00 00 * * * * * * * * 0 0 )
+registersymbol(fenglingyueying)
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+unregistersymbol(fenglingyueying)
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>84457</ID>
+          <Description>"No description"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>fenglingyueying</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
