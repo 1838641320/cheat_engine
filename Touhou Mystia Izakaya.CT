@@ -195,24 +195,30 @@ GameAssembly.dll+17E9A16: 41 3B DC                    - cmp ebx,r12d
 
  
  
-aobscanmodule(getmoney,GameAssembly.dll,48 8B 05 ******** 48 8B 80 B8000000 48 8B 40 18 48 83 C4 28 C3 cc cc cc cc cc cc 48 81) // should be unique
-define(INJECT,getmoney+E)
-//assert(INJECT,48 8B 40 18 48 83 C4 28)
-globalalloc(getPlayerStatus,$1000,INJECT)
+aobscanmodule(getmoney,GameAssembly.dll,48 8B 05 ******** 48 8B 80 B8000000 48 8B 40 18 48 83 C4 28 C3 cc cc cc cc cc cc 48 81)
+define(INJECT,getmoney+7)
+assert(INJECT,48 8B 80 B8000000 48 8B 40 18 48 83 C4 28)
+alloc(getPlayerStatus,$1000,INJECT)
+registersymbol(PlayerStatusAddress)
 
 label(code)
 label(return)
+label(PlayerStatusAddress)
 
 getPlayerStatus:
-
+  mov [PlayerStatusAddress],rax
 code:
+  mov rax,[rax+000000B8]
   mov rax,[rax+18]
   add rsp,28
   jmp return
+  align 10 cc
+PlayerStatusAddress:
+  dq 0
 
 INJECT:
   jmp getPlayerStatus
-  nop 3
+  nop A
 return:
 
 registersymbol(INJECT)
@@ -220,12 +226,15 @@ registersymbol(INJECT)
 [DISABLE]
 //code from here till the end of the code will be used to disable the cheat
 INJECT:
-  db 48 8B 40 18 48 83 C4 28
+  //db 48 8B 80 B8 00 00 00 48 8B 40 18 48 83 C4 28
+  mov rax,[rax+000000B8]
+  mov rax,[rax+18]
+  add rsp,28
 
 unregistersymbol(INJECT)
 
 dealloc(getPlayerStatus)
-unregistersymbol(getPlayerStatus)
+unregistersymbol(PlayerStatusAddress)
 
 {
 83 B8 E0 00 00 00 00 75 0f 48 8b ** E8 ******** 48 8B 05 ******** 48 8B 80 B8000000 48 8B 40 18 48 83 C4 28 C3 cc cc cc cc cc cc
@@ -256,53 +265,55 @@ GameData.RunTime.Common.RunTimePlayerData.GetLevelUpExp: 48 81 EC 68 01 00 00  -
 GameAssembly.dll+4E7787: 80 3D 74 10 72 03 00  - cmp byte ptr [GameAssembly.dll+3C08802],00
 }
 </AssemblerScript>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>5</ID>
-      <Description>"不知道什么东西的基址"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Binary</VariableType>
-      <BitStart>0</BitStart>
-      <BitLength>0</BitLength>
-      <ShowAsBinary>0</ShowAsBinary>
-      <Address>GameAssembly.dll+39d2570</Address>
-      <Offsets>
-        <Offset>0</Offset>
-      </Offsets>
       <CheatEntries>
         <CheatEntry>
-          <ID>6</ID>
-          <Description>"No description"</Description>
+          <ID>5</ID>
+          <Description>"不知道什么东西的基址 （GameAssembly.dll+39ea628）"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Binary</VariableType>
           <BitStart>0</BitStart>
           <BitLength>0</BitLength>
           <ShowAsBinary>0</ShowAsBinary>
-          <Address>+b8</Address>
+          <Address>PlayerStatusAddress</Address>
           <Offsets>
             <Offset>0</Offset>
           </Offsets>
           <CheatEntries>
             <CheatEntry>
-              <ID>7</ID>
-              <Description>"钱数"</Description>
+              <ID>6</ID>
+              <Description>"No description"</Description>
               <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>8 Bytes</VariableType>
-              <Address>+18</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>9</ID>
-              <Description>"经验值"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>8 Bytes</VariableType>
-              <Address>+20</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>10</ID>
-              <Description>"等级"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>+28</Address>
+              <VariableType>Binary</VariableType>
+              <BitStart>0</BitStart>
+              <BitLength>0</BitLength>
+              <ShowAsBinary>0</ShowAsBinary>
+              <Address>+b8</Address>
+              <Offsets>
+                <Offset>0</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>7</ID>
+                  <Description>"钱数"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>8 Bytes</VariableType>
+                  <Address>+18</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>9</ID>
+                  <Description>"经验值"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>8 Bytes</VariableType>
+                  <Address>+20</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>10</ID>
+                  <Description>"等级"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>+28</Address>
+                </CheatEntry>
+              </CheatEntries>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -506,5 +517,10 @@ GameAssembly.dll+60A1C3 - 48 8D 0D 4E653A03     - lea rcx,[GameAssembly.dll+39B0
 </AssemblerScript>
     </CheatEntry>
   </CheatEntries>
-  <UserdefinedSymbols/>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>getPlayerStatus</Name>
+      <Address>00011000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
 </CheatTable>
